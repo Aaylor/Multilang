@@ -1,0 +1,5 @@
+lexer.ml
+*.cm*
+*.o
+*.a
+.depend

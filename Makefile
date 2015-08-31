@@ -7,12 +7,12 @@ FOLDERS_OPT     = -I $(SOURCES_FOLDER)
 OCAMLC_FLAGS    = $(FOLDERS_OPT) -w @1..8 -w @10..26 -w @28..31 -w @39..49 -annot
 OCAMLFIND_FLAGS =
 
-OCAMLDOC_FLAGS  = -html -d $(OCAMLDOC_FOLDER) -t OCamllang \
+OCAMLDOC_FLAGS  = -html -d $(OCAMLDOC_FOLDER) -t Multilang \
 			-colorize-code -short-functors
 OCAMLDOC_FOLDER = doc
 
 LIB_FOLDER = lib
-LIB_NAME   = Ocamllang
+LIB_NAME   = Multilang
 LIB_DIST   = $(LIB_FOLDER)/$(LIB_NAME)
 LIB_DIST_NATIVE = $(LIB_DIST).cmxa
 LIB_DIST_BYTECODE = $(LIB_DIST).cma
@@ -29,7 +29,7 @@ all: lexer depend $(LIB_DIST_NATIVE)
 
 
 # Library compilation
-COMPILATION_ORDER = lexer.cmx ocamllang.cmx
+COMPILATION_ORDER = lexer.cmx multilang.cmx
 
 $(LIB_DIST_NATIVE): $(SOURCES_OBJ_NAT) $(SOURCES_OBJ_BYT)
 	@ mkdir -p $(LIB_FOLDER)

@@ -1,7 +1,7 @@
 (*****************************************************************************)
 (* The MIT License (MIT)                                                     *)
 (*                                                                           *)
-(* Copyright (c) 2015 OCamllang                                               *)
+(* Copyright (c) 2015 Multilang                                              *)
 (*  Loïc Runarvot <loic.runarvot[at]gmail.com>                               *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
@@ -24,18 +24,18 @@
 (*****************************************************************************)
 
 
-module OCamlLangMap = Map.Make(struct
+module MultiLangMap = Map.Make(struct
     type t = string
     let compare = String.compare
   end)
 
-type t = string OCamlLangMap.t
+type t = string MultiLangMap.t
 
-let ocamllang_cache : (string, t) Hashtbl.t = Hashtbl.create 4
-let add_cache = Hashtbl.add ocamllang_cache
-let get_cache = Hashtbl.find ocamllang_cache
-let exists_cache = Hashtbl.mem ocamllang_cache
-let clear_cache () = Hashtbl.clear ocamllang_cache
+let multilang_cache : (string, t) Hashtbl.t = Hashtbl.create 4
+let add_cache = Hashtbl.add multilang_cache
+let get_cache = Hashtbl.find multilang_cache
+let exists_cache = Hashtbl.mem multilang_cache
+let clear_cache () = Hashtbl.clear multilang_cache
 
 (*
 
@@ -46,13 +46,13 @@ let clear_cache () = Hashtbl.clear ocamllang_cache
 let set ref_ val_ = ref_ := val_
 let get ref_ ()   = !ref_
 
-let __ocamllang_default_allow_duplication = ref false
-let set_allow_duplication = set __ocamllang_default_allow_duplication
-let allow_duplication = get __ocamllang_default_allow_duplication
+let __multilang_default_allow_duplication = ref false
+let set_allow_duplication = set __multilang_default_allow_duplication
+let allow_duplication = get __multilang_default_allow_duplication
 
-let __ocamllang_default_base_folder = ref "lang"
-let set_base_folder = set __ocamllang_default_base_folder
-let base_folder = get __ocamllang_default_base_folder
+let __multilang_default_base_folder = ref "lang"
+let set_base_folder = set __multilang_default_base_folder
+let base_folder = get __multilang_default_base_folder
 
 
 (*
@@ -77,13 +77,9 @@ let make_locale base =
       (* String.index *)
       str, ""
   in
-  try
-    let lang, _ = simple_split base '.' in
-    let language, country = simple_split lang '_' in
-    if country = "" then Partial language else Complete (language, country)
-  with Not_found ->
-    (* Sys.getenv *)
-    Default
+  let lang, _ = simple_split base '.' in
+  let language, country = simple_split lang '_' in
+  if country = "" then Partial language else Complete (language, country)
 
 let make_filename where base locale =
   let mk = Printf.sprintf "_%s" in
@@ -92,7 +88,7 @@ let make_filename where base locale =
     | Partial l -> mk l, ""
     | Complete (l, c) -> mk l, mk c
   in
-  Filename.concat where (Printf.sprintf "%s%s%s.ocamllang" base l c)
+  Filename.concat where (Printf.sprintf "%s%s%s.multilang" base l c)
 
 let find_file where base locale =
   let down = function
@@ -103,7 +99,7 @@ let find_file where base locale =
   let rec aux locale =
     let filename = make_filename where base locale in
     if not (Sys.file_exists filename) || Sys.is_directory filename
-       || not (Filename.check_suffix filename ".ocamllang") then
+       || not (Filename.check_suffix filename ".multilang") then
       aux (down locale)
     else
       filename
@@ -112,7 +108,7 @@ let find_file where base locale =
 
 (*
 
-   OCamllang implementation
+   Multilang implementation
    
 *)
 
@@ -129,7 +125,7 @@ let with_open_in filename handler =
     close_in channel;
     raise exn
 
-let make_ocamllang ?(where = base_folder ()) ?(locale = None) basename =
+let make_multilang ?(where = base_folder ()) ?(locale = None) basename =
   let locale = match locale with
     | None ->
       begin try
@@ -148,21 +144,21 @@ let make_ocamllang ?(where = base_folder ()) ?(locale = None) basename =
       with_open_in filename (fun channel ->
           Lexer.lex_until_none (Lexing.from_channel channel)
             (fun acc (id, text) ->
-               if not (allow_duplication ()) && OCamlLangMap.mem id acc then
+               if not (allow_duplication ()) && MultiLangMap.mem id acc then
                  raise (Duplication (Printf.sprintf "%s:%s" filename id));
-               OCamlLangMap.add id text acc) OCamlLangMap.empty
+               MultiLangMap.add id text acc) MultiLangMap.empty
         )
     in
     add_cache filename map;
     map
 
-let key_exists ocamllang key = OCamlLangMap.mem key ocamllang
+let key_exists multilang key = MultiLangMap.mem key multilang
 
-let keys ocamllang = List.map fst (OCamlLangMap.bindings ocamllang)
+let keys multilang = List.map fst (MultiLangMap.bindings multilang)
 
-let get_value ocamllang key =
+let get_value multilang key =
   try
-    OCamlLangMap.find key ocamllang
+    MultiLangMap.find key multilang
   with Not_found ->
     raise (Key_failure key)
 
@@ -181,11 +177,11 @@ let pp_locale fmt = function
   | Complete (lang, country) ->
     Format.fprintf fmt "@[Complete @[(%s, %s)@]@]" lang country
 
-let pp_ocamllang fmt ocamllang =
+let pp_multilang fmt multilang =
   Format.fprintf fmt "@[<hov 2>{%t @ }@]@\n"
     (fun fmt ->
        List.iter (fun (x, y) -> Format.fprintf fmt "@ %s : \"%s\";" x y)
-         (OCamlLangMap.bindings ocamllang))
+         (MultiLangMap.bindings multilang))
 
 
 (*

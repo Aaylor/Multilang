@@ -1,7 +1,7 @@
 (*****************************************************************************)
 (* The MIT License (MIT)                                                     *)
 (*                                                                           *)
-(* Copyright (c) 2015 OCamllang                                               *)
+(* Copyright (c) 2015 Multilang                                              *)
 (*  Loïc Runarvot <loic.runarvot[at]gmail.com>                               *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
@@ -24,7 +24,7 @@
 (*****************************************************************************)
 
 
-(** Module to make the lexing of an .ocamllang file *)
+(** Module to make the lexing of an .multilang file *)
 
 (** {2 Lexing} *)
 

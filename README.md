@@ -1,5 +1,5 @@
 
-OCamllang
+Multilang
 =========
 
 _Runarvot Loïc, loic.runarvot[at]gmail.com_

@@ -1,7 +1,7 @@
 (*****************************************************************************)
 (* The MIT License (MIT)                                                     *)
 (*                                                                           *)
-(* Copyright (c) 2015 OCamllang                                               *)
+(* Copyright (c) 2015 Multilang                                              *)
 (*  Loïc Runarvot <loic.runarvot[at]gmail.com>                               *)
 (*                                                                           *)
 (* Permission is hereby granted, free of charge, to any person obtaining a   *)
@@ -30,7 +30,7 @@
 (** {2 Exception} *)
 
 exception Duplication of string
-(** [Duplication] is raised when two same keys exists in the ocamllang file.
+(** [Duplication] is raised when two same keys exists in the multilang file.
     The string contains the filename, and the involved key. *)
 
 exception Key_failure of string
@@ -40,7 +40,7 @@ exception Key_failure of string
 
 
 (** {2 Default Configuration}
-    Default value use by OCamllang if no values are given. *)
+    Default value use by Multilang if no values are given. *)
 
 val set_allow_duplication : bool -> unit
 (** [set_allow_duplication b] set allow duplication to [b].
@@ -58,7 +58,7 @@ val set_base_folder : string -> unit
 
 val base_folder : unit -> string
 (** [base_folder ()] returns the base folder used when searching for an
-    ocamllang file.
+    multilang file.
 
     The default value is ["lang"] *)
 
@@ -77,16 +77,16 @@ type locale =
 
 
 
-(** {2 OCamllang} *)
+(** {2 Multilang} *)
 
 type t
 
-val make_ocamllang : ?where:string -> ?locale:string option -> string -> t
-(** [make_ocamllang ~where ~locale basename] will search for the ocamllang
+val make_multilang : ?where:string -> ?locale:string option -> string -> t
+(** [make_multilang ~where ~locale basename] will search for the multilang
     according to the three parameters. 
 
     The [~where] parameters is the folder from where the algorithm has to find
-    the ocamllang file. By default, it uses the [base_folder ()] function
+    the multilang file. By default, it uses the [base_folder ()] function
     (which as for default value "lang").
 
     The [~locale] parameters is to find which lang to use. If it sets to None,
@@ -98,19 +98,19 @@ val make_ocamllang : ?where:string -> ?locale:string option -> string -> t
     The [basename] parameter is the basename used to find the file.
 
     The searched file will take the following form:
-    "where/basename\[_locale\].ocamllang".
+    "where/basename\[_locale\].multilang".
 *)
 
 val key_exists : t -> string -> bool
-(** [key_exists ocamllang key] checks if [key] exists in the [ocamllang]
+(** [key_exists multilang key] checks if [key] exists in the [multilang]
     context. *)
 
 val keys : t -> string list
-(** [keys ocamllang] returns all known keys in [ocamllang] context *)
+(** [keys multilang] returns all known keys in [multilang] context *)
 
 val get_value : t -> string -> string
-(** [get_value ocamllang key] try to find the value associated to [key] in
-    [ocamllang] context. If the key doesn't exists, it raises [Key_failure]. *)
+(** [get_value multilang key] try to find the value associated to [key] in
+    [multilang] context. If the key doesn't exists, it raises [Key_failure]. *)
 
 
 
@@ -119,8 +119,8 @@ val get_value : t -> string -> string
 val pp_locale : Format.formatter -> locale -> unit
 (** [pp_locale fmt locale] pretty print [locale] to [fmt]. *)
 
-val pp_ocamllang : Format.formatter -> t -> unit
-(** [pp_ocamllang fmt ocamllang] pretty print [ocamllang] to [fmt]. *)
+val pp_multilang : Format.formatter -> t -> unit
+(** [pp_multilang fmt multilang] pretty print [multilang] to [fmt]. *)
 
 
 (*

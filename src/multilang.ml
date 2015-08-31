@@ -61,6 +61,8 @@ let base_folder = get __multilang_default_base_folder
    
  *)
 
+exception Multilang_file_not_found of string
+
 type locale =
   | Default
   | Partial of string
@@ -92,7 +94,7 @@ let make_filename where base locale =
 
 let find_file where base locale =
   let down = function
-    | Default -> assert false (* TODO : real error *)
+    | Default -> raise (Multilang_file_not_found base)
     | Partial _ -> Default
     | Complete (s, _) -> Partial s
   in

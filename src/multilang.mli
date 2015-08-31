@@ -37,6 +37,9 @@ exception Key_failure of string
 (** [Key_failure] is raise when the key doesn't exists. The string contains
     the involved key. *)
 
+exception Multilang_file_not_found of string
+(** [Multilang_file_not_found] is raised when the multilang file is not found
+    by the algorithm. The string contains the base name given. *)
 
 
 (** {2 Default Configuration}
@@ -99,6 +102,8 @@ val make_multilang : ?where:string -> ?locale:string option -> string -> t
 
     The searched file will take the following form:
     "where/basename\[_locale\].multilang".
+
+    @raise Multilang_file_not_found if the file doesn't exists.
 *)
 
 val key_exists : t -> string -> bool
